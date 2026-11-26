@@ -1,0 +1,21 @@
+{
+  "_note": "Test photos from public retailer/manufacturer listings (downloaded Nov 2026, file signatures verified). Private testing only: git-ignored, not for the demo video or published pages. 'handoff_ok' = an expert handoff counts as a pass for that photo.",
+  "photos": [
+    { "file": "02-disc045.png",          "expected": "DISC045",    "source": "pipescenes.co.uk",           "notes": "pair, '045 A2' stamped on body" },
+    { "file": "04-bristan-8367j.webp",   "expected": "8367J",      "source": "screwfix.com" },
+    { "file": "05-tc043.jpg",            "expected": "TC043",      "source": "tap-cartridges.com",         "notes": "small image, shown as a pair" },
+    { "file": "06-disc012.jpg",          "expected": "DISC012",    "source": "plumbsparesdirect.com",      "notes": "3D render, long spline" },
+    { "file": "07-disc045-blurry.jpg",   "expected": "DISC045",    "source": "blurred copy of 02",         "handoff_ok": true },
+    { "file": "08-sedal-35.jpg",         "expected": "SEDAL-35",   "source": "hartplumbingspares.co.uk" },
+    { "file": "09-sedal-40.jpg",         "expected": "SEDAL-40",   "source": "neshome.co.uk",              "notes": "'sedal' printed on body" },
+    { "file": "11-mira-1663114.webp",    "expected": "1.1663.114", "source": "kohler.scene7.com (Mira)" },
+    { "file": "12-mira-1663152.jpg",     "expected": "1.1663.152", "source": "divapor.com" },
+    { "file": "13-bristan-00622415.jpg", "expected": "00622415",   "source": "divapor.com",                "notes": "discontinued: result should offer 62000017" },
+    { "file": "14-fm-pro550uk.png",      "expected": "PRO550UK",   "source": "fluidmasteruk.com" },
+    { "file": "15-fm-pro550uk-alt.jpg",  "expected": "PRO550UK",   "source": "plumbinbits.co.uk",          "notes": "different angle, with seal and cable" },
+    { "file": "16-fm-pro820uk.jpg",      "expected": "PRO820UK",   "source": "plumbinbits.co.uk" },
+    { "file": "17-fm-400uk.jpg",         "expected": "400UK073",   "source": "fluidmasteruk.com",          "notes": "400LB074 (brass shank) is a valid near-miss" },
+    { "file": "18-siamp-99b.jpg",        "expected": "30996007",   "source": "plumbinbits.co.uk",          "notes": "very low resolution" },
+    { "file": "19-jollyfill-side.jpg",   "expected": "10120694",   "source": "plumbinbits.co.uk" }
+  ]
+}

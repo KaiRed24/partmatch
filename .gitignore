@@ -27,6 +27,13 @@ yarn-error.log*
 
 # local env files
 .env*.local
+.env
+
+# test photos are downloaded from public listings: private testing only
+/test-images/*.jpg
+/test-images/*.jpeg
+/test-images/*.png
+/test-images/*.webp
 
 # vercel
 .vercel
