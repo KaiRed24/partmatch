@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { isAdmin } from "@/lib/admin";
 import { CATEGORY_LABELS, type Category } from "@/lib/schemas";
@@ -210,7 +211,7 @@ export default async function AdminPage() {
         <section id="orders" className="scroll-mt-20">
           <h2 className="text-lg font-bold text-slate-900">Orders</h2>
           <p className="text-sm text-slate-500">
-            Mark an order delayed to email the customer their options (wait, send what&apos;s ready, or refund). Their answer appears here.
+            Mark an order delayed to email the customer their options (wait, send what&apos;s ready, or refund), then use View email to see exactly what they receive. Their answer appears here.
           </p>
           <div className="mt-4 overflow-x-auto rounded-xl bg-white ring-1 ring-slate-200">
             <table className="w-full min-w-[760px] text-left text-sm">
@@ -256,6 +257,11 @@ export default async function AdminPage() {
                             Emailed {when(email.sent_at)}
                             {email.payload?.channel === "preview" ? " (preview only)" : ""}
                           </span>
+                        )}
+                        {email && (
+                          <Link href={`/admin/email/${o.id}`} className="mt-1 inline-block text-xs font-semibold text-brand underline underline-offset-2">
+                            View email
+                          </Link>
                         )}
                       </td>
                       <td className="px-4 py-3 text-slate-700">
