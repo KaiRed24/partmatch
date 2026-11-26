@@ -116,7 +116,7 @@ async function matchAndRank(db: SupabaseClient, images: ImageInput[], extraction
     };
   });
 
-  const questions = canAsk ? rr.questions.filter((q) => !q.attribute || !(q.attribute in answers)) : [];
+  const questions = canAsk ? rr.questions.filter((q) => !q.attribute || !(q.attribute in answers)).map(fixSplineOptions) : [];
   const status: IdentifyResult["status"] =
     confidence >= threshold() ? "result" : questions.length ? "questions" : "handoff";
   return { status, confidence, matches, questions: status === "questions" ? questions : [] };
@@ -218,4 +218,19 @@ export async function answer(opts: { db: SupabaseClient; identificationId: strin
   if (uErr) throw uErr;
 
   return { identification_id: identificationId, round, photo_tip: null, extraction, ...out };
+}
+
+/**
+ * The model sometimes offers only the spline count it expects (e.g. "20 splines" / "Not sure"), which strands a customer
+ * whose part has a different count. Spline questions always offer 20, 24 and Not sure (plus any other count we stock).
+ */
+const COMMON_SPLINES = [20, 24];
+function fixSplineOptions(q: Question): Question {
+  if (q.attribute !== "splines" || q.kind !== "choice") return q;
+  const counts = new Set(COMMON_SPLINES);
+  for (const o of q.options ?? []) {
+    const n = parseInt(o, 10);
+    if ([18, 20, 24, 28].includes(n)) counts.add(n);
+  }
+  return { ...q, options: [...[...counts].sort((a, b) => a - b).map(String), "Not sure"] };
 }

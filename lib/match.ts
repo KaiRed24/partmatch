@@ -144,7 +144,7 @@ function scoreAttributes(p: ProductRow, ex: Extraction, answers: Answers) {
   // Spline count: exact or wrong.
   const sp = read("splines");
   if (sp && pa.splines != null) {
-    const n = Number(sp.v);
+    const n = parseInt(String(sp.v), 10); // accepts "24" and "24 splines"
     if (n === Number(pa.splines)) {
       score += sp.trusted ? 0.5 : 0.25;
       matched.push(`${pa.splines} splines`);
