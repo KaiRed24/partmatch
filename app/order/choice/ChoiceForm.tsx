@@ -40,7 +40,7 @@ export default function ChoiceForm({ token, preselected, current }: { token: str
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ token, choice }),
       });
-      const json = await res.json();
+      const json = await res.json().catch(() => ({ error: "Something went wrong. Please try again in a minute." }));
       if (!res.ok) throw new Error(json.error ?? "Something went wrong.");
       setSaved(choice);
     } catch (err) {

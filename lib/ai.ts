@@ -76,15 +76,22 @@ async function callOpenAI(system: string, prompt: string, images: ImageInput[]):
 }
 
 /** The free tier rate-limits bursts (429) and is sometimes overloaded (503): wait and retry. */
-async function fetchWithRetry(url: string, init: RequestInit, tries = 2): Promise<Response> {
+async function fetchWithRetry(url: string, init: RequestInit, deadline: number, tries = 2): Promise<Response> {
   for (let i = 0; ; i++) {
-    const res = await fetch(url, { ...init, signal: AbortSignal.timeout(90_000) });
+    const left = deadline - Date.now();
+    if (left <= 1000) throw new Error("time budget used up");
+    const res = await fetch(url, { ...init, signal: AbortSignal.timeout(Math.min(90_000, left)) });
     if (![429, 500, 503].includes(res.status) || i >= tries - 1) return res;
     const body = await res.text();
     const hinted = Number(body.match(/"retryDelay":\s*"(\d+)s"/)?.[1]);
-    await new Promise((r) => setTimeout(r, Math.min(hinted || 4 * 2 ** i, 30) * 1000));
+    const wait = Math.min(hinted || 4 * 2 ** i, 30) * 1000;
+    if (Date.now() + wait >= deadline) return res;
+    await new Promise((r) => setTimeout(r, wait));
   }
 }
+
+/** Each AI call gets at most this long across all retries and backup models, so a request always answers in time. */
+const CALL_BUDGET_MS = Number(process.env.AI_CALL_BUDGET_MS || 110_000);
 
 /** Main model first; if Google says it's overloaded, fall back to the next one so the customer still gets an answer. */
 function geminiModels(): string[] {
@@ -114,14 +121,16 @@ async function callGemini(system: string, prompt: string, images: ImageInput[]):
   });
 
   let lastError = "";
+  const deadline = Date.now() + CALL_BUDGET_MS;
   for (const model of geminiModels()) {
+    if (Date.now() > deadline - 2000) break;
     let res: Response;
     try {
       res = await fetchWithRetry(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
         method: "POST",
         headers: { "Content-Type": "application/json", "x-goog-api-key": key },
         body,
-      });
+      }, deadline);
     } catch (err) {
       lastError = `${model}: ${(err as Error).message}`;
       continue; // timeout or network error: try the next model

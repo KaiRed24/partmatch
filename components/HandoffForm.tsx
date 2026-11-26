@@ -32,7 +32,7 @@ export default function HandoffForm({
     }
     try {
       const res = await fetch("/api/tickets", { method: "POST", body: form });
-      const json = await res.json();
+      const json = await res.json().catch(() => ({ error: "Something went wrong. Please try again in a minute." }));
       if (!res.ok) throw new Error(json.error ?? "Something went wrong.");
       onDone(json.reference, String(form.get("name")));
     } catch (err) {

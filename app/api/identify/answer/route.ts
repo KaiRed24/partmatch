@@ -5,7 +5,7 @@ import { rateLimited } from "@/lib/images";
 import { supabaseAdmin } from "@/lib/supabase";
 
 export const runtime = "nodejs";
-export const maxDuration = 60;
+export const maxDuration = 300; // the free AI tier can be slow when busy; Vercel Hobby allows up to 300s
 
 const Body = z.object({
   identification_id: z.string().uuid(),

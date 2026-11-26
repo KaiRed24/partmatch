@@ -6,7 +6,7 @@ import { FITTING_TYPES, type FittingType } from "@/lib/schemas";
 import { supabaseAdmin } from "@/lib/supabase";
 
 export const runtime = "nodejs";
-export const maxDuration = 60;
+export const maxDuration = 300; // the free AI tier can be slow when busy; Vercel Hobby allows up to 300s
 
 /** POST multipart/form-data: fitting_type, photos (1-3 JPEG/PNG/WebP files). */
 export async function POST(req: Request) {

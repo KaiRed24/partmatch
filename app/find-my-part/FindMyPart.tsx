@@ -74,7 +74,15 @@ export default function FindMyPart({ initialType }: { initialType: FittingType |
     setStep({ kind: "loading" });
     try {
       const res = await fetch(url, init);
-      const json = await res.json();
+      // A server timeout comes back as plain text, not JSON: show a friendly message instead of a parsing error.
+      const json = await res.json().catch(() => null);
+      if (!json) {
+        throw new Error(
+          res.status === 504 || res.status === 502
+            ? "Our photo matcher is very busy right now and took too long to answer. Please try again in a minute, or send your photos to our team instead."
+            : "Something went wrong reading the reply. Please try again, or send your photos to our team instead.",
+        );
+      }
       if (!res.ok) throw new Error(json.error ?? "Something went wrong.");
       show(json as ApiResult);
     } catch (err) {
